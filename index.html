@@ -1,1 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZSHARAD | Construction & Engineering</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background-color: #ffffff; color: #000000; }
+        
+        /* Layout enforcement for native 3D canvas scales */
+        .product-3d-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        /* Modern UI component customizations */
+        .glass-nav {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useEffect, useRef } = React;
+
+        function Website() {
+            const canvasRef = useRef(null);
+            const productCanvasRef = useRef(null);
+
+            useEffect(() => {
+                // ==========================================
+                // 1. HERO GLOBAL ENVIRONMENT 3D CANVAS
+                // ==========================================
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({
+                    canvas: canvasRef.current,
+                    alpha: true,
+                    antialias: true
+                });
+
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                const geometry = new THREE.TorusGeometry(3.2, 0.35, 16, 100);
+                const material = new THREE.MeshPhysicalMaterial({
+                    color: 0x111111,
+                    metalness: 0.95,
+                    roughness: 0.05,
+                    transparent: true,
+                    opacity: 0.14,
+                    side: THREE.DoubleSide
+                });
+
+                const torus = new THREE.Mesh(geometry, material);
+                // Offset position horizontally on desktops
+                torus.position.set(window.innerWidth > 768 ? 4.5 : 0, 0, -1);
+                scene.add(torus);
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 8, 5);
+                scene.add(directionalLight);
+
+                camera.position.z = 8;
+
+                // ==========================================
+                // 2. PRODUCT INTERACTIVE 3D COMPONENT
+                // ==========================================
+                const productScene = new THREE.Scene();
+                const productCamera = new THREE.PerspectiveCamera(45, 4 / 3, 0.1, 1000);
+                const productRenderer = new THREE.WebGLRenderer({
+                    canvas: productCanvasRef.current,
+                    alpha: true,
+                    antialias: true
+                });
+
+                productRenderer.setSize(400, 300);
+                productRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                const sphereGeometry = new THREE.SphereGeometry(1.7, 40, 40);
+                const sphereMaterial = new THREE.MeshPhysicalMaterial({
+                    color: 0x1a1a1a,
+                    metalness: 1.0,
+                    roughness: 0.05,
+                    clearcoat: 1.0,
+                    clearcoatRoughness: 0.05
+                });
+
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                productScene.add(sphere);
+
+                const productAmbient = new THREE.AmbientLight(0xffffff, 0.9);
+                productScene.add(productAmbient);
+                
+                const productLight = new THREE.DirectionalLight(0xffffff, 1.6);
+                productLight.position.set(6, 6, 6);
+                productScene.add(productLight);
+
+                productCamera.position.z = 5;
+
+                // ==========================================
+                // 3. ENGINE ANIMATION MANAGEMENT LOOP
+                // ==========================================
+                let animationId;
+                const animate = () => {
+                    animationId = requestAnimationFrame(animate);
+                    
+                    // Rotational kinematics
+                    torus.rotation.x += 0.001;
+                    torus.rotation.y += 0.0012;
+                    sphere.rotation.y += 0.004;
+                    
+                    renderer.render(scene, camera);
+                    productRenderer.render(productScene, productCamera);
+                };
+                animate();
+
+                // ==========================================
+                // 4. RESPONSIVE SCREEN ADAPTATION LOGIC
+                // ==========================================
+                const handleResize = () => {
+                    if (!canvasRef.current) return;
+                    
+                    // Update main hero viewport dimensions
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    
+                    // Reposition matrix based on current layout width breakpoints
+                    torus.position.set(window.innerWidth > 768 ? 4.5 : 0, 0, -1);
+                };
+                window.addEventListener('resize', handleResize);
+
+                // Housekeeping pipeline to prevent system memory leaks
+                return () => {
+                    window.removeEventListener('resize', handleResize);
+                    cancelAnimationFrame(animationId);
+                    renderer.dispose();
+                    productRenderer.dispose();
+                };
+            }, []);
+
+            return (
+                <div className="relative bg-white w-full min-h-screen font-sans antialiased selection:bg-black selection:text-white">
+                    
+                    {/* Navigation System Menu */}
+                    <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-gray-100">
+                        <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+                            <div className="text-2xl font-black tracking-tighter text-black">
+                                ZSHARAD
+                            </div>
+                            <div className="hidden md:flex items-center space-x-10">
+                                <a href="#services" className="text-gray-600 hover:text-black transition-colors font-medium text-sm">Services</a>
+                                <a href="#solar" className="text-gray-600 hover:text-black transition-colors font-medium text-sm">Solar Structures</a>
+                                <a href="#why-us" className="text-gray-600 hover:text-black transition-colors font-medium text-sm">Why Us</a>
+                                <a href="#offerings" className="text-gray-600 hover:text-black transition-colors font-medium text-sm">Products</a>
+                                <button className="px-6 py-2.5 bg-black text-white text-xs font-semibold rounded-full hover:bg-gray-800 transition-all tracking-wide">
+                                    CONNECT WITH US
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Stage Hero Section Block */}
+                    <div className="relative min-h-screen flex items-center justify-center pt-20">
+                        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />
+                        
+                        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center md:text-left w-full md:grid md:grid-cols-12 gap-8 items-center">
+                            <div className="md:col-span-8">
+                                <h1 className="text-5xl sm:text-6xl md:text-[5.5rem] font-bold tracking-tight mb-8 text-black leading-[1.05]">
+                                    Build strong.<br />Build smart.
+                                </h1>
+                                
+                                <p className="text-xl md:text-2xl text-gray-600 max-w-2xl font-light leading-relaxed mb-12">
+                                    End‑to‑end construction and engineering solutions using high‑quality metal structures and advanced fabrication techniques.
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                                    <button className="w-full sm:w-auto px-10 py-4 bg-black text-white text-base font-semibold rounded-full hover:bg-gray-800 transition-all shadow-xl tracking-wide">
+                                        Get a quote
+                                    </button>
+                                    <button className="w-full sm:w-auto px-10 py-4 text-black text-base font-semibold rounded-full border-2 border-black hover:bg-black hover:text-white transition-all tracking-wide">
+                                        View projects
+                                    </button>
+                                </div>
+
+                                <p className="mt-8 text-gray-400 text-xs tracking-wider uppercase font-medium">
+                                    Custom steel structure solutions · Project consultation
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Operational Core Services Block */}
+                    <div id="services" className="relative z-10 bg-white border-t border-gray-100 py-32">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <div className="text-center mb-24">
+                                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 text-black">
+                                    Our core services.
+                                </h2>
+                                <p className="text-xl text-gray-500 max-w-2xl mx-auto font-light">
+                                    Comprehensive construction solutions from concept to completion.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {[
+                                    { icon: '🏗️', title: 'Construction Services', desc: 'Building construction for industrial, commercial & custom projects. Steel structure construction works. Turnkey project execution.' },
+                                    { icon: '🏭', title: 'Assembly & Installation', desc: 'Assembly of hot galvanized steel structures. On-site installation of prefabricated buildings. Structural framework erection.' },
+                                    { icon: '🔧', title: 'Maintenance & Repair', desc: 'Repair of metal structures. Structural reinforcement & modification. Long-term maintenance services.' }
+                                ].map((feature, i) => (
+                                    <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:shadow-xl hover:bg-gray-100/60 transition-all duration-300">
+                                        <div className="text-4xl mb-6">{feature.icon}</div>
+                                        <h3 className="text-xl font-bold mb-4 text-black">{feature.title}</h3>
+                                        <p className="text-gray-600 leading-relaxed font-light text-sm">{feature.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Interactive Showcase Block */}
+                    <div className="relative z-10 bg-white py-24 border-t border-gray-100">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                                <div className="product-3d-wrapper bg-gray-50 rounded-3xl p-8 flex justify-center items-center overflow-hidden border border-gray-100 min-h-[350px]">
+                                    <canvas ref={productCanvasRef} className="rounded-2xl" />
+                                </div>
+                                <div>
+                                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 text-black">
+                                        Durable, high‑performance metal structures.
+                                    </h2>
+                                    <p className="text-lg text-gray-600 font-light leading-relaxed mb-8">
+                                        We specialize in manufacturing and supplying durable metal structures for construction and industrial applications. From prefabricated buildings to custom fabricated products.
+                                    </p>
+                                    <button className="text-black font-semibold text-lg hover:underline inline-flex items-center gap-2">
+                                        View our offerings <span>→</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Solar Framework Blueprint Section */}
+                    <div id="solar" className="relative z-10 bg-white py-32 border-t border-gray-100">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <div className="text-center mb-16">
+                                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 text-black">
+                                    Hotdip galvanized solar structures.
+                                </h2>
+                                <p className="text-xl text-gray-500 font-light max-w-3xl mx-auto">
+                                    Premium quality mounting solutions for solar installations. Engineered for durability and optimized for maximum energy efficiency.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+                                <div className="order-2 md:order-1">
+                                    <h3 className="text-2xl font-bold mb-6 text-black">All types of solar mounting systems</h3>
+                                    <ul className="space-y-4">
+                                        {[
+                                            'Ground-mounted solar structures',
+                                            'Rooftop mounting systems',
+                                            'Carport solar structures',
+                                            'Floating solar platforms',
+                                            'Tracking system frameworks',
+                                            'Commercial & utility-scale solutions'
+                                        ].map((item, i) => (
+                                            <li key={i} className="flex items-center gap-3">
+                                                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-xs font-bold flex-shrink-0">✓</div>
+                                                <span className="text-base text-gray-700 font-light">{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                
+                                <div className="order-1 md:order-2 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 bg-sky-400">
+                                    <svg viewBox="0 0 800 600" className="w-full h-auto block">
+                                        <defs>
+                                            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" style={{ stopColor: '#38bdf8' }} />
+                                                <stop offset="100%" style={{ stopColor: '#bae6fd' }} />
+                                            </linearGradient>
+                                            <linearGradient id="panelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style={{ stopColor: '#1e40af' }} />
+                                                <stop offset="100%" style={{ stopColor: '#3b82f6' }} />
+                                            </linearGradient>
+                                            <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style={{ stopColor: '#94a3b8' }} />
+                                                <stop offset="100%" style={{ stopColor: '#cbd5e1' }} />
+                                            </linearGradient>
+                                        </defs>
+                                        <rect width="800" height="600" fill="url(#skyGrad)" />
+                                        <circle cx="700" cy="100" r="45" fill="#f59e0b" opacity="0.9" />
+                                        <rect x="280" y="320" width="16" height="200" fill="url(#metalGrad)" />
+                                        <rect x="500" y="320" width="16" height="200" fill="url(#metalGrad)" />
+                                        <rect x="200" y="310" width="400" height="12" fill="url(#metalGrad)" />
+                                        <g transform="rotate(-15 400 250)">
+                                            <rect x="220" y="200" width="160" height="100" fill="url(#panelGrad)" stroke="#1e293b" strokeWidth="2" />
+                                            <rect x="400" y="200" width="160" height="100" fill="url(#panelGrad)" stroke="#1e293b" strokeWidth="2" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div className="bg-black text-white rounded-3xl p-8 md:p-12 text-center">
+                                <h3 className="text-2xl font-bold mb-4">Superior corrosion protection</h3>
+                                <p className="text-base text-gray-300 font-light max-w-2xl mx-auto mb-8">
+                                    Our hotdip galvanizing process ensures decades of maintenance-free performance in all weather conditions, protecting your solar investment for the long term.
+                                </p>
+                                <button className="px-8 py-3.5 bg-white text-black font-semibold rounded-full hover:bg-gray-100 transition-all text-sm tracking-wide">
+                                    REQUEST SPECIFICATIONS
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Enterprise Differentiation Matrix */}
+                    <div id="why-us" className="relative z-10 bg-gray-50 py-32 border-t border-gray-100">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-center mb-4 text-black">Why choose us.</h2>
+                            <p className="text-xl text-gray-500 text-center mb-16 font-light">Premium quality and advanced technology for every project.</p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                                {[
+                                    'Premium quality hot galvanized steel',
+                                    'Advanced fabrication technology',
+                                    'Durable & corrosion-resistant materials',
+                                    'Custom design & engineering support',
+                                    'Fast delivery & professional installation'
+                                ].map((feature, i) => (
+                                    <div key={i} className="flex items-center gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:shadow-md transition-all">
+                                        <div className="flex-shrink-0 w-6 h-6 bg-black rounded-full flex items-center justify-center text-white text-xs font-bold">✓</div>
+                                        <span className="text-base text-gray-800 font-light">{feature}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Portfolio Matrices Catalogue Offerings */}
+                    <div id="offerings" className="relative z-10 bg-white py-32 border-t border-gray-100">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <div className="text-center mb-20">
+                                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-black">Our offerings.</h2>
+                                <p className="text-xl text-gray-500 font-light">High‑grade metal materials and custom fabricated products.</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                                {[
+                                    { name: 'Metal Structures', features: ['Structures of metal for construction', 'Hot galvanized steel structures', 'Prefabricated metal buildings', 'Metal frames for building'] },
+                                    { name: 'Materials & Components', features: ['Structural steel materials', 'Metal alloys for construction', 'Industrial-grade metal components', 'Custom fabricated metal products'] },
+                                    { name: 'Modular Solutions', features: ['Transportable modular buildings', 'Pre-engineered structures', 'Customizable designs', 'Quick installation systems'] },
+                                    { name: 'Industrial Applications', features: ['Warehouses & factories', 'Commercial buildings', 'Agricultural structures', 'Custom industrial projects'] }
+                                ].map((offering, i) => (
+                                    <div key={i} className="p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:bg-gray-100/70 transition-all flex flex-col justify-between">
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-6 text-black">{offering.name}</h3>
+                                            <ul className="space-y-3 mb-8">
+                                                {offering.features.map((f, j) => (
+                                                    <li key={j} className="flex items-center gap-2 text-sm text-gray-600 font-light">
+                                                        <span className="w-1.5 h-1.5 bg-black rounded-full" /> {f}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <button className="w-full py-3 bg-black text-white text-xs font-semibold rounded-full hover:bg-gray-800 transition-all tracking-wider uppercase">
+                                            Learn more
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Action Execution Footer Section */}
+                    <div className="relative z-10 bg-black text-white py-32 text-center">
+                        <div className="max-w-4xl mx-auto px-6">
+                            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Build strong. Build smart.<br />Build with us.</h2>
+                            <p className="text-lg text-gray-400 font-light mb-12">Contact us today for custom steel structure solutions and project consultation.</p>
+                            <button className="px-10 py-4 bg-white text-black text-base font-bold rounded-full hover:bg-gray-100 transition-all tracking-wide">
+                                GET IN TOUCH
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Multi-Column Global Corporate Footer Module */}
+                    <footer className="relative z-10 bg-gray-50 border-t border-gray-200 py-16 text-gray-600 text-sm">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+                                <div>
+                                    <h4 className="font-bold text-black mb-4 text-xs tracking-wider uppercase">Services</h4>
+                                    <ul className="space-y-2.5 font-light text-gray-500">
+                                        <li><a href="#" className="hover:text-black transition-colors">Construction</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Assembly</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Maintenance</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Repair</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-black mb-4 text-xs tracking-wider uppercase">Products</h4>
+                                    <ul className="space-y-2.5 font-light text-gray-500">
+                                        <li><a href="#" className="hover:text-black transition-colors">Steel Structures</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Metal Buildings</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Modular Units</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Custom Work</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-black mb-4 text-xs tracking-wider uppercase">Company</h4>
+                                    <ul className="space-y-2.5 font-light text-gray-500">
+                                        <li><a href="#" className="hover:text-black transition-colors">About Us</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Projects</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Careers</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-black mb-4 text-xs tracking-wider uppercase">Resources</h4>
+                                    <ul className="space-y-2.5 font-light text-gray-500">
+                                        <li><a href="#" className="hover:text-black transition-colors">Specifications</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Certifications</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-black mb-4 text-xs tracking-wider uppercase">Connect</h4>
+                                    <ul className="space-y-2.5 font-light text-gray-500">
+                                        <li><a href="#" className="hover:text-black transition-colors">LinkedIn</a></li>
+                                        <li><a href="#" className="hover:text-black transition-colors">Contact Us</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="pt-8 border-t border-gray-200 text-center text-gray-400 font-light text-xs">
+                                © 2026 ZSHARAD. All rights reserved.
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Website />);
+    </script>
+</body>
+</html>
 
