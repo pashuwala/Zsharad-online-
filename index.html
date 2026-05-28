@@ -1,1 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>ZSHARAD | Construction & Engineering</title>
+
+<meta name="description" content="ZSHARAD - Industrial construction, steel structures, solar mounting systems in India. Premium engineering solutions.">
+<meta name="keywords" content="steel structure India, solar mounting structure, industrial construction, prefabricated buildings">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #fff; }
+
+/* Loader */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Glass Nav */
+.glass-nav {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(30px) saturate(180%);
+}
+
+/* Footer animation */
+.ultra-footer {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.8s;
+}
+.ultra-footer.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<!-- Loader -->
+<div id="loader">
+    <div class="animate-spin rounded-full h-10 w-10 border-4 border-black border-t-transparent"></div>
+</div>
+
+<!-- WhatsApp Button -->
+<a href="https://wa.me/918982379366"
+   class="fixed bottom-6 right-6 bg-black text-white px-5 py-3 rounded-full shadow-lg z-50">
+   Chat Now
+</a>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+const { useEffect, useRef } = React;
+
+function Website() {
+    const canvasRef = useRef(null);
+    const footerRef = useRef(null);
+
+    useEffect(() => {
+
+        // Hide loader
+        setTimeout(() => {
+            document.getElementById("loader").style.display = "none";
+        }, 1200);
+
+        const isMobile = window.innerWidth < 768;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvasRef.current,
+            alpha: true,
+            antialias: true
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+
+        const torus = new THREE.Mesh(
+            new THREE.TorusGeometry(3.2,0.35,16,100),
+            new THREE.MeshPhysicalMaterial({
+                color: 0x111111,
+                metalness: 1,
+                roughness: 0.05,
+                opacity: 0.15,
+                transparent: true
+            })
+        );
+
+        scene.add(torus);
+        camera.position.z = 8;
+
+        scene.add(new THREE.AmbientLight(0xffffff,1.2));
+
+        // Mouse interaction
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener("mousemove", e=>{
+            mouseX = (e.clientX/window.innerWidth)*2-1;
+            mouseY = -(e.clientY/window.innerHeight)*2+1;
+        });
+
+        let animationId;
+        const animate = ()=>{
+            animationId = requestAnimationFrame(animate);
+
+            torus.rotation.y += 0.001 + mouseX*0.002;
+            torus.rotation.x += 0.001 + mouseY*0.002;
+
+            renderer.render(scene,camera);
+        };
+        animate();
+
+        // Scroll effect
+        window.addEventListener("scroll",()=>{
+            const y = window.scrollY;
+            torus.position.y = y*0.002;
+        });
+
+        // Footer animation
+        window.addEventListener("scroll",()=>{
+            if(!footerRef.current) return;
+            if(footerRef.current.getBoundingClientRect().top < window.innerHeight-100){
+                footerRef.current.classList.add("show");
+            }
+        });
+
+        return ()=> cancelAnimationFrame(animationId);
+
+    }, []);
+
+    return (
+        <div>
+
+            {/* NAV */}
+            <nav className="fixed top-0 w-full z-50 glass-nav border-b">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between">
+                    <div className="font-black text-xl">ZSHARAD</div>
+                    <div className="hidden md:flex gap-8 text-sm">
+                        <a href="#services">Services</a>
+                        <a href="#why">Why Us</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                </div>
+            </nav>
+
+            {/* HERO */}
+            <div className="min-h-screen flex items-center justify-center text-center pt-20">
+                <canvas ref={canvasRef} className="absolute inset-0"></canvas>
+
+                <div className="relative z-10">
+                    <h1 className="text-5xl md:text-7xl font-bold">
+                        Build strong.<br/>Build smart.
+                    </h1>
+
+                    <p className="mt-6 text-gray-600">
+                        Advanced steel & solar engineering solutions
+                    </p>
+
+                    <a href="mailto:info.zonato@gmail.com"
+                       className="inline-block mt-8 px-8 py-4 bg-black text-white rounded-full">
+                        Get Quote
+                    </a>
+                </div>
+            </div>
+
+            {/* TRUST */}
+            <div className="py-16 text-center border-t">
+                <p className="text-gray-400 mb-6">Trusted by clients</p>
+                <div className="flex justify-center gap-10 text-sm">
+                    <span>ISO Certified</span>
+                    <span>10+ Projects</span>
+                    <span>Pan India</span>
+                    <span>5+ Years</span>
+                </div>
+            </div>
+
+            {/* SERVICES */}
+            <div id="services" className="py-24 text-center">
+                <h2 className="text-4xl font-bold mb-12">Services</h2>
+
+                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div className="p-6 border rounded-xl">
+                        <h3 className="font-bold mb-2">Construction</h3>
+                        <p className="text-gray-600 text-sm">Industrial & commercial structures</p>
+                    </div>
+
+                    <div className="p-6 border rounded-xl">
+                        <h3 className="font-bold mb-2">Installation</h3>
+                        <p className="text-gray-600 text-sm">Steel & solar mounting systems</p>
+                    </div>
+
+                    <div className="p-6 border rounded-xl">
+                        <h3 className="font-bold mb-2">Maintenance</h3>
+                        <p className="text-gray-600 text-sm">Repair & long-term service</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* WHY */}
+            <div id="why" className="py-24 bg-gray-50 text-center">
+                <h2 className="text-4xl font-bold mb-12">Why Choose Us</h2>
+
+                <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+                    <div className="p-6 bg-white border rounded-xl">Premium Steel Quality</div>
+                    <div className="p-6 bg-white border rounded-xl">Fast Delivery</div>
+                    <div className="p-6 bg-white border rounded-xl">Custom Engineering</div>
+                    <div className="p-6 bg-white border rounded-xl">Corrosion Resistant</div>
+                </div>
+            </div>
+
+            {/* CONTACT */}
+            <div id="contact" className="py-24 text-center">
+                <h2 className="text-4xl font-bold mb-6">Contact Us</h2>
+                <p className="mb-6">info.zonato@gmail.com</p>
+
+                <a href="mailto:info.zonato@gmail.com"
+                   className="px-8 py-4 bg-black text-white rounded-full">
+                   Send Email
+                </a>
+            </div>
+
+            {/* FOOTER */}
+            <footer ref={footerRef} className="ultra-footer bg-gray-100 py-12 text-center text-sm">
+                © 2026 ZSHARAD. All rights reserved.
+            </footer>
+
+        </div>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Website/>);
+
+</script>
+
+</body>
+</html>
