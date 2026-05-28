@@ -32,6 +32,18 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
+
+        /* Footer scroll animation */
+        .ultra-footer {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .ultra-footer.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -43,6 +55,7 @@
         function Website() {
             const canvasRef = useRef(null);
             const productCanvasRef = useRef(null);
+            const footerRef = useRef(null);
 
             useEffect(() => {
                 // ==========================================
@@ -151,9 +164,22 @@
                 };
                 window.addEventListener('resize', handleResize);
 
+                // ==========================================
+                // 5. FOOTER SCROLL ANIMATION
+                // ==========================================
+                const handleFooterScroll = () => {
+                    if (!footerRef.current) return;
+                    const footerTop = footerRef.current.getBoundingClientRect().top;
+                    if (footerTop < window.innerHeight - 100) {
+                        footerRef.current.classList.add('show');
+                    }
+                };
+                window.addEventListener('scroll', handleFooterScroll);
+
                 // Housekeeping pipeline to prevent system memory leaks
                 return () => {
                     window.removeEventListener('resize', handleResize);
+                    window.removeEventListener('scroll', handleFooterScroll);
                     cancelAnimationFrame(animationId);
                     renderer.dispose();
                     productRenderer.dispose();
@@ -227,7 +253,7 @@
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 {[
                                     { icon: '🏗️', title: 'Construction Services', desc: 'Building construction for industrial, commercial & custom projects. Steel structure construction work' },
-                                    { icon: '🏭', title: 'Assembly & Installation', desc: 'Assembly of hot galvanized steel structures. On-site installation of prefabricated buildings. Structural assembly' },
+                                    { icon: '🏭', title: 'Assembly & Installation', desc: 'Assembly of hot galvanized steel structures. On-site installation of prefabricated buildings. Structural assembly services.' },
                                     { icon: '🔧', title: 'Maintenance & Repair', desc: 'Repair of metal structures. Structural reinforcement & modification. Long-term maintenance services.' }
                                 ].map((feature, i) => (
                                     <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:shadow-xl hover:bg-gray-100/60 transition-all duration-300">
@@ -405,7 +431,7 @@
                     </div>
 
                     {/* Multi-Column Global Corporate Footer Module */}
-                    <footer className="relative z-10 bg-gray-50 border-t border-gray-200 py-16 text-gray-600 text-sm">
+                    <footer ref={footerRef} className="ultra-footer relative z-10 bg-gray-50 border-t border-gray-200 py-16 text-gray-600 text-sm">
                         <div className="max-w-6xl mx-auto px-6">
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
                                 <div>
