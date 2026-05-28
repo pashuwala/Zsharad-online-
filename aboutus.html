@@ -1,1 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | Zsharad</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* HERO SECTION */
+.hero {
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)),
+              url('https://images.unsplash.com/photo-1509395176047-4a66953fd231') center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 70px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.hero p {
+  font-size: 20px;
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
+/* SECTION STYLE */
+.section {
+  padding: 120px 10%;
+  text-align: center;
+}
+
+.section h2 {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+.section p {
+  max-width: 800px;
+  margin: auto;
+  font-size: 18px;
+  opacity: 0.8;
+  line-height: 1.6;
+}
+
+/* SPLIT SECTION */
+.split {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.split .text {
+  flex: 1;
+  padding: 60px;
+}
+
+.split .image {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+}
+
+/* DARK + LIGHT MIX */
+.light {
+  background: #fff;
+  color: #000;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.stats div h3 {
+  font-size: 40px;
+}
+
+.stats div p {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* FOOTER */
+footer {
+  padding: 40px;
+  text-align: center;
+  background: #111;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+/* ANIMATION */
+.fade {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 1s;
+}
+
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <h1>We Build The Future</h1>
+    <p>Innovating solar & steel infrastructure for a sustainable tomorrow</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section fade">
+  <h2>Who We Are</h2>
+  <p>
+    Zsharad is a next-generation infrastructure company focused on solar energy solutions,
+    steel structures, and sustainable engineering. We combine innovation, durability, and
+    modern design to deliver world-class industrial solutions.
+  </p>
+</section>
+
+<!-- MISSION -->
+<section class="split">
+  <div class="text fade">
+    <h2>Our Mission</h2>
+    <p>
+      To revolutionize renewable infrastructure with cutting-edge engineering,
+      delivering high-performance solar structures that power the future.
+    </p>
+  </div>
+  <div class="image" style="background-image:url('https://images.unsplash.com/photo-1509395176047-4a66953fd231');"></div>
+</section>
+
+<!-- VISION -->
+<section class="split light">
+  <div class="image" style="background-image:url('https://images.unsplash.com/photo-1497436072909-f5e4be0c7d04');"></div>
+  <div class="text fade">
+    <h2>Our Vision</h2>
+    <p>
+      To become a global leader in sustainable infrastructure, driving innovation,
+      efficiency, and long-term environmental impact.
+    </p>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section fade">
+  <h2>Our Impact</h2>
+  <div class="stats">
+    <div>
+      <h3>500+</h3>
+      <p>Projects</p>
+    </div>
+    <div>
+      <h3>50MW+</h3>
+      <p>Solar Installed</p>
+    </div>
+    <div>
+      <h3>100%</h3>
+      <p>Client Satisfaction</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section light fade">
+  <h2>Why Choose Us</h2>
+  <p>
+    Premium quality. Precision engineering. Future-ready design.
+    We don’t just build structures — we build long-term value.
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 Zsharad. All rights reserved.
+</footer>
+
+<script>
+const faders = document.querySelectorAll('.fade');
+
+window.addEventListener('scroll', () => {
+  faders.forEach(el => {
+    const top = el.getBoundingClientRect().top;
+    if(top < window.innerHeight - 100){
+      el.classList.add('show');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
