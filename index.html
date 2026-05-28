@@ -199,7 +199,7 @@
                                     <button className="w-full sm:w-auto px-10 py-4 bg-black text-white text-base font-semibold rounded-full hover:bg-gray-800 transition-all shadow-xl tracking-wide">
                                         Get a quote
                                     </button>
-                                    <button className="w-full sm:w-auto px-10 py-4 text-black text-base font-semibold rounded-full border-2 border-black hover:bg-black hover:text-white transition-all tracking-wide">
+                                    <button className="w-full sm:w-auto px-10 py-4 text-black text-base font-semibold rounded-full border-2 border-black hover:bg-black hover:text-white transition-all">
                                         View projects
                                     </button>
                                 </div>
@@ -225,8 +225,8 @@
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 {[
-                                    { icon: '🏗️', title: 'Construction Services', desc: 'Building construction for industrial, commercial & custom projects. Steel structure construction works. Turnkey project execution.' },
-                                    { icon: '🏭', title: 'Assembly & Installation', desc: 'Assembly of hot galvanized steel structures. On-site installation of prefabricated buildings. Structural framework erection.' },
+                                    { icon: '🏗️', title: 'Construction Services', desc: 'Building construction for industrial, commercial & custom projects. Steel structure construction works. Turnkey projects.' },
+                                    { icon: '🏭', title: 'Assembly & Installation', desc: 'Assembly of hot galvanized steel structures. On-site installation of prefabricated buildings. Structural framing.' },
                                     { icon: '🔧', title: 'Maintenance & Repair', desc: 'Repair of metal structures. Structural reinforcement & modification. Long-term maintenance services.' }
                                 ].map((feature, i) => (
                                     <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:shadow-xl hover:bg-gray-100/60 transition-all duration-300">
@@ -251,7 +251,7 @@
                                         Durable, high‑performance metal structures.
                                     </h2>
                                     <p className="text-lg text-gray-600 font-light leading-relaxed mb-8">
-                                        We specialize in manufacturing and supplying durable metal structures for construction and industrial applications. From prefabricated buildings to custom fabricated products.
+                                        We specialize in manufacturing and supplying durable metal structures for construction and industrial applications. From prefabricated buildings to custom fabrication.
                                     </p>
                                     <button className="text-black font-semibold text-lg hover:underline inline-flex items-center gap-2">
                                         View our offerings <span>→</span>
@@ -367,8 +367,8 @@
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                                 {[
-                                    { name: 'Metal Structures', features: ['Structures of metal for construction', 'Hot galvanized steel structures', 'Prefabricated metal buildings', 'Metal frames for building'] },
-                                    { name: 'Materials & Components', features: ['Structural steel materials', 'Metal alloys for construction', 'Industrial-grade metal components', 'Custom fabricated metal products'] },
+                                    { name: 'Metal Structures', features: ['Structures of metal for construction', 'Hot galvanized steel structures', 'Prefabricated metal buildings', 'Metal frames'] },
+                                    { name: 'Materials & Components', features: ['Structural steel materials', 'Metal alloys for construction', 'Industrial-grade metal components', 'Custom fabrication'] },
                                     { name: 'Modular Solutions', features: ['Transportable modular buildings', 'Pre-engineered structures', 'Customizable designs', 'Quick installation systems'] },
                                     { name: 'Industrial Applications', features: ['Warehouses & factories', 'Commercial buildings', 'Agricultural structures', 'Custom industrial projects'] }
                                 ].map((offering, i) => (
@@ -448,6 +448,33 @@
                                     </ul>
                                 </div>
                             </div>
+                            
+                            {/* Contact Information Section */}
+                            <div className="bg-white rounded-2xl p-8 mb-8 border border-gray-100">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <div>
+                                        <h4 className="font-bold text-black mb-3 text-sm tracking-wider uppercase">Address</h4>
+                                        <p className="text-gray-700 font-light text-sm leading-relaxed">
+                                            Uslapur, Bilaspur<br />
+                                            Chhattisgarh, India<br />
+                                            495001
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-black mb-3 text-sm tracking-wider uppercase">Email</h4>
+                                        <p className="text-gray-700 font-light text-sm">
+                                            <a href="mailto:info.zonato@gmail.com" className="hover:text-black transition-colors">info.zonato@gmail.com</a>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-black mb-3 text-sm tracking-wider uppercase">WhatsApp</h4>
+                                        <p className="text-gray-700 font-light text-sm">
+                                            <a href="https://wa.me/918982379366" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">+91-8982379366</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="pt-8 border-t border-gray-200 text-center text-gray-400 font-light text-xs">
                                 © 2026 ZSHARAD. All rights reserved.
                             </div>
@@ -462,4 +489,3 @@
     </script>
 </body>
 </html>
-
